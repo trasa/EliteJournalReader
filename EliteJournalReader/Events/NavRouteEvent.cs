@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 namespace EliteJournalReader.Events
 {
     /// <summary>
-    /// When plotting a multi-star route, the file “NavRoute.json” is written in the same directory as the journal, with a list of stars along that route
+    /// When plotting a multi-star route, the file ï¿½NavRoute.jsonï¿½ is written in the same directory as the journal, with a list of stars along that route
     /// Example:
     /// { "timestamp":"2020-04-27T08:02:52Z", "event":"Route", "Route":[ 
     ///     { "StarSystem":"i Bootis", "SystemAddress":1281787693419, "StarPos":[-22.37500,34.84375,4.00000], "StarClass":"G" }, 
@@ -20,7 +20,7 @@ namespace EliteJournalReader.Events
     ///     { "StarSystem":"SPF-LF 1", "SystemAddress":22661187052961, "StarPos":[2.90625, 6.31250, -9.56250], "StarClass":"M" }, 
     ///     { "StarSystem":"Luyten's Star", "SystemAddress":7268024264097, "StarPos":[6.56250, 2.34375, -10.25000], "StarClass":"M" }
     /// ] }
-    /// Note this may be changed for final 3.7 release to use tag name “SystemAddress” instead of “StarSystem” for better consistency
+    /// Note this may be changed for final 3.7 release to use tag name ï¿½SystemAddressï¿½ instead of ï¿½StarSystemï¿½ for better consistency
     /// </summary>
     public class NavRouteEvent : JournalEvent<NavRouteEvent.NavRouteEventArgs>
     {
@@ -46,7 +46,7 @@ namespace EliteJournalReader.Events
                 catch (Exception e)
                 {
                     Trace.TraceWarning("Error reading NavRoute.json: " + e.Message);
-                    throw e;
+                    throw;
                 }
 
             }
