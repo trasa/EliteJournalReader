@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Security.Policy;
+
 
 namespace EliteJournalReader.Events
 {
