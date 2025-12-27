@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 
@@ -20,6 +21,10 @@ namespace EliteJournalReader
             eventArgs.Timestamp = DateTime.Parse(evt.Value<string>("timestamp"),
                 CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
         }
+
+        public virtual string ToJson(Formatting formatting = Formatting.Indented) => OriginalEvent?.ToString(formatting) ?? "{}";
+
+        public virtual string EventName => OriginalEvent?["event"]?.Value<string>() ?? "";
 
         public virtual void PostProcess(JObject evt, JournalWatcher journalWatcher) { }
 
