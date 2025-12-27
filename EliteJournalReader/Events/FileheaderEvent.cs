@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
 namespace EliteJournalReader.Events
 {
     public class FileheaderEvent : JournalEvent<FileheaderEvent.FileheaderEventArgs>
@@ -18,6 +11,9 @@ namespace EliteJournalReader.Events
             public string Language { get; set; }
             public int Part { get; set; }
             public bool Odyssey { get; set; }
+
+            protected override string ToCompact() => $"Heading received: gameversion {GameVersion}, build {Build}.";
+            protected override string ToSummary() => ToCompact();
         }
     }
 }

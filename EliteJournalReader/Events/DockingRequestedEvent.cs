@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
 namespace EliteJournalReader.Events
 {
     //When written: when the player requests docking at a station
@@ -20,6 +13,8 @@ namespace EliteJournalReader.Events
             public string StationType { get; set; }
             public long MarketID { get; set; }
             public LandingPads LandingPads { get; set; }
+
+            protected override string ToCompact() => $"Docking Permission Requested at {StationName}";
         }
     }
 }

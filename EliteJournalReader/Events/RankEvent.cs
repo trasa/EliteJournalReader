@@ -23,7 +23,7 @@ namespace EliteJournalReader.Events
     {
         public RankEvent() : base("Rank") { }
 
-        public class RankEventArgs : JournalEventArgs, IFormattable
+        public class RankEventArgs : JournalEventArgs
         {
             public CombatRank Combat { get; set; }
             public TradeRank Trade { get; set; }
@@ -34,30 +34,13 @@ namespace EliteJournalReader.Events
             public SoldierRank Soldier { get; set; }
             public ExobiologistRank Exobiologist { get; set; }
 
-            /// <summary>Formats the value of the current instance using the specified format.</summary>
-            /// <param name="format">
-            /// "G" or "SUMMARY" - General summary format (default)<br/>
-            /// "F" or "FULL" - Full format including all ranks<br/>
-            /// "C" or "COMPACT" - Compact format showing only Combat, Trade, and Explore ranks<br/>
-            /// "J" or "JSON" - JSON format
-            /// </param>
-            /// <param name="formatProvider" />
-            /// <returns>The value of the current instance in the specified format.</returns>
-            public string ToString(string format, IFormatProvider formatProvider = null)
-            {
-                format = format?.ToUpperInvariant() ?? "G";
+            protected override string ToCompact() => $"{base.ToCompact()}: C:{Combat} T:{Trade} E:{Explore}";
 
-                return format switch
-                {
-                    "G" or "SUMMARY" => $"{nameof(Combat)}: {Combat}, {nameof(Trade)}: {Trade}, {nameof(Explore)}: {Explore}",
-                    "F" or "FULL" => $"{nameof(Combat)}: {Combat}, {nameof(Trade)}: {Trade}, {nameof(Explore)}: {Explore}, " +
-                                     $"{nameof(Empire)}: {Empire}, {nameof(Federation)}: {Federation}, {nameof(CQC)}: {CQC}, " +
-                                     $"{nameof(Soldier)}: {Soldier}, {nameof(Exobiologist)}: {Exobiologist}",
-                    "C" or "COMPACT" => $"C:{Combat} T:{Trade} E:{Explore}",
-                    "J" or "JSON" => ToJson(),
-                    _ => throw new FormatException($"Format '{format}' is not supported")
-                };
-            }
+            protected override string ToSummary() => $"{base.ToCompact()}: {nameof(Combat)}: {Combat}, {nameof(Trade)}: {Trade}, {nameof(Explore)}: {Explore}";
+
+            protected override string ToFull() => $"{base.ToCompact()}: {nameof(Combat)}: {Combat}, {nameof(Trade)}: {Trade}, {nameof(Explore)}: {Explore}, " +
+                                                  $"{nameof(Empire)}: {Empire}, {nameof(Federation)}: {Federation}, {nameof(CQC)}: {CQC}, " +
+                                                  $"{nameof(Soldier)}: {Soldier}, {nameof(Exobiologist)}: {Exobiologist}";
 
         }
     }

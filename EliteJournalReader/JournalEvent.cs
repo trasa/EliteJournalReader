@@ -1,10 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace EliteJournalReader
 {

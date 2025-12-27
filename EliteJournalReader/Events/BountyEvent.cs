@@ -34,6 +34,8 @@ namespace EliteJournalReader.Events
             public string VictimFaction { get; set; }
             public int TotalReward { get; set; }
             public int SharedWithOthers { get; set; } = 0;
+
+            protected override string ToSummary() => $"Bounty received for destroying {Target_Localised ?? Target} ({PilotName_Localised ?? PilotName}) - Total Reward: {TotalReward} CR";
         }
     }
 }

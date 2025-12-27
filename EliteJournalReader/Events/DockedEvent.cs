@@ -68,6 +68,10 @@ namespace EliteJournalReader.Events
                 clone.StationFaction = StationFaction?.Clone();
                 return clone;
             }
+
+            protected override string ToCompact() => $"Docked at {StationName}";
+
+            protected override string ToSummary() => base.ToCompact();
         }
     }
 }

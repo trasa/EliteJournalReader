@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
 namespace EliteJournalReader.Events
 {
-    //When written: when the ‘self destruct’ function is used
+    //When written: when the ï¿½self destructï¿½ function is used
     //Parameters: none
     public class SelfDestructEvent : JournalEvent<SelfDestructEvent.SelfDestructEventArgs>
     {
@@ -15,6 +8,9 @@ namespace EliteJournalReader.Events
 
         public class SelfDestructEventArgs : JournalEventArgs
         {
+            protected override string ToCompact() => "SELF DESTRUCT INITIATED!";
+            protected override string ToSummary() => ToCompact();
+            protected override string ToFull() => ToCompact();
         }
     }
 }

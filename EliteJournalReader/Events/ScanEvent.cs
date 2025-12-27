@@ -283,6 +283,12 @@ namespace EliteJournalReader.Events
             public bool? WasDiscovered { get; set; }
 
             public bool? WasMapped { get; set; }
+
+            protected override string ToCompact()
+            {
+                string l = Landable ?? false ? "landable " : "";
+                return $"Scanned {ScanType} of {l}body {BodyName} in system {StarSystem}";
+            }
         }
     }
 

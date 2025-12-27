@@ -9,9 +9,9 @@ namespace EliteJournalReader.Events
 {
     //When written: The player has been rewarded for a capital ship combat
     //Parameters:
-    //•	Reward: value of award
-    //•	AwardingFaction
-    //•	VictimFaction
+    //ï¿½	Reward: value of award
+    //ï¿½	AwardingFaction
+    //ï¿½	VictimFaction
     public class CapShipBondEvent : JournalEvent<CapShipBondEvent.CapShipBondEventArgs>
     {
         public CapShipBondEvent() : base("CapShipBond") { }
@@ -21,6 +21,8 @@ namespace EliteJournalReader.Events
             public string AwardingFaction { get; set; }
             public string VictimFaction { get; set; }
             public int Reward { get; set; }
+
+            protected override string ToSummary() => $"Capital Ship Bond: {Reward} CR awarded by {AwardingFaction} for destroying a ship of {VictimFaction}";
         }
     }
 }

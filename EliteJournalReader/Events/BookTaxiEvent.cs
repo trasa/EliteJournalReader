@@ -18,6 +18,8 @@ namespace EliteJournalReader.Events
             public string DestinationSystem { get; set; }
 
             public string DestinationLocation { get; set; }
+
+            protected override string ToSummary() => $"Booked a Taxi to {DestinationLocation} in {DestinationSystem} for {Cost} CR";
         }
     }
 }

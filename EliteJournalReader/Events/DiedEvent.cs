@@ -9,12 +9,12 @@ namespace EliteJournalReader.Events
 {
     //When written: player was killed
     //Parameters: 
-    //•	KillerName
-    //•	KillerShip
-    //•	KillerRank
+    //ï¿½	KillerName
+    //ï¿½	KillerShip
+    //ï¿½	KillerRank
     //When written: player was killed by a wing
     //Parameters:
-    //•	Killers: a JSON array of objects containing player name, ship, and rank
+    //ï¿½	Killers: a JSON array of objects containing player name, ship, and rank
     public class DiedEvent : JournalEvent<DiedEvent.DiedEventArgs>
     {
         public DiedEvent() : base("Died") { }
@@ -50,6 +50,15 @@ namespace EliteJournalReader.Events
             }
 
             public Killer[] Killers { get; set; }
+
+            protected override string ToSummary()
+            {
+                string who = Killers
+                    .Select(k => string.Format("{0} ({2}, flying a {1})", k.Name, k.Ship, k.Rank))
+                    .Aggregate((x, y) => $"{x}, {y}");
+                return $"Killed by {who}";
+            }
+
         }
     }
 }

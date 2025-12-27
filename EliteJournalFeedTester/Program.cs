@@ -1,7 +1,6 @@
 ﻿using EliteJournalReader;
 using EliteJournalReader.Events;
 using System;
-using System.Linq;
 
 namespace EliteJournalFeedTester
 {
@@ -11,17 +10,19 @@ namespace EliteJournalFeedTester
         {
             if (args.Length == 0)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Don't forget to supply a path where the journal feed is located.");
+                Console.ResetColor();
                 return;
             }
-
             string path = args[0];
-
             var watcher = new JournalWatcher(path);
 
-
-
-            watcher.GetEvent<UnhandledEvent>()?.AddHandler((_, e) => Console.WriteLine("!!! Unhandled event {0}!!!\n{1}", e.EventType, e.Data));
+            watcher.GetEvent<UnhandledEvent>()?.AddHandler((_, e) => {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("!!! Unhandled event {0}!!!\n{1}", e.EventType, e.Data);
+                Console.ResetColor();
+            });
 
             watcher.GetEvent<AfmuRepairsEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<AppliedToSquadronEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -90,28 +91,16 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<DatalinkVoucherEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DataScannedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DeleteSuitLoadoutEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<DiedEvent>()?.AddHandler((_, e) =>
-            {
-                Console.WriteLine("Killed by {0}",
-                    e.Killers
-                        .Select(k => string.Format("{0} ({2}, flying a {1})", k.Name, k.Ship, k.Rank))
-                        .Aggregate((x, y) => $"{x}, {y}"));
-            });
-
+            watcher.GetEvent<DiedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DisbandedSquadronEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DiscoveryScanEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DisembarkEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-            watcher.GetEvent<DockedEvent>()?.AddHandler((_, e) => Console.WriteLine("Docked at {0}", e.StationName));
-
+            watcher.GetEvent<DockedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DockFighterEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DockingCancelledEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DockingDeniedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<DockingGrantedEvent>()?.AddHandler((_, e) => Console.WriteLine("Docking Permission Granted at {0} on pad {1}", e.StationName, e.LandingPad));
-
-            watcher.GetEvent<DockingRequestedEvent>()?.AddHandler((_, e) => Console.WriteLine("Docking Permission Requested at {0}", e.StationName));
-
+            watcher.GetEvent<DockingGrantedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
+            watcher.GetEvent<DockingRequestedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DockingTimeoutEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DockSRVEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<DropItemsEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -123,20 +112,14 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<EngineerCraftEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<EngineerLegacyConvertEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<EngineerProgressEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<EscapeInterdictionEvent>()?.AddHandler((_, e) => Console.WriteLine("Escaped Interdiction from {0}", e.Interdictor));
-
+            watcher.GetEvent<EscapeInterdictionEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FactionKillBondEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FetchRemoteModuleEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FighterDestroyedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FighterRebuiltEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<FileheaderEvent>()?.AddHandler((_, e) => Console.WriteLine("Heading received: gameversion {0}, build {1}.", e.GameVersion, e.Build));
-
+            watcher.GetEvent<FileheaderEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FriendsEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<FSDJumpEvent>()?.AddHandler((_, e) => Console.WriteLine("Woohoo, jumped to [{0}, {1}, {2}]", e.StarPos.X, e.StarPos.Y, e.StarPos.Z));
-
+            watcher.GetEvent<FSDJumpEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FSDTargetEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FSSAllBodiesFoundEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<FSSBodySignalsEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -192,9 +175,7 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<ModuleStoreEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ModuleSwapEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<MultiSellExplorationDataEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<MusicEvent>()?.AddHandler((_, e) => Console.WriteLine("Music: {0}", e.MusicTrack));
-
+            watcher.GetEvent<MusicEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<NavBeaconScanEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<NavRouteClearEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<NavRouteEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -221,13 +202,9 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<ProspectedAsteroidEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<PVPKillEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<QuitACrewEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<RankEvent>()?.AddHandler((_, e) => Console.WriteLine("Rank: {0}", e.ToString("C")));
-
+            watcher.GetEvent<RankEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<RebootRepairEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<ReceiveTextEvent>()?.AddHandler((_, e) => Console.WriteLine("Received Text ({0}): From {1}, Message: {2}", e.Channel, e.From, e.Message));
-
+            watcher.GetEvent<ReceiveTextEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<RedeemVoucherEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<RefuelAllEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<RefuelPartialEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -242,17 +219,13 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<SAAScanCompleteEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SAASignalsFoundEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ScanBaryCentreEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<ScanEvent>()?.AddHandler((_, e) => Console.WriteLine("Scanned a body {0}, it is {1}landable.", e.BodyName, e.Landable ?? false ? "" : "not "));
-
+            watcher.GetEvent<ScanEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e, compact: true));
             watcher.GetEvent<ScannedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ScanOrganicEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ScientificResearchEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ScreenshotEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SearchAndRescueEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<SelfDestructEvent>()?.AddHandler((_, _) => Console.WriteLine("SELF DESTRUCT INITIATED!"));
-
+            watcher.GetEvent<SelfDestructEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SellDronesEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SellExplorationDataEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SellMicroResourcesEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -260,13 +233,7 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<SellShipOnRebuyEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SellSuitEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SellWeaponEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<SendTextEvent>()?.AddHandler((_, e) => Console.WriteLine("Sent Text ({0}): To {1}, Message: {2} ({3})",
-                e.Channel,
-                e.To,
-                e.Message,
-                e.Sent ? "Success" : "Failed"));
-
+            watcher.GetEvent<SendTextEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SetUserShipNameEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<SharedBookmarkToSquadronEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ShieldStateEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -301,9 +268,7 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<TouchdownEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<TradeMicroResourcesEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<TransferMicroResourcesEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
-
-            watcher.GetEvent<UnderAttackEvent>()?.AddHandler((_, e) => Console.WriteLine("Under Attack! Target: {0}", e.Target));
-
+            watcher.GetEvent<UnderAttackEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<UndockedEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<UpgradeSuitEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<UpgradeWeaponEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -323,6 +288,20 @@ namespace EliteJournalFeedTester
             watcher.StopWatching();
         }
 
-        private static void PrintSimpleEvent(JournalEventArgs e) => Console.WriteLine("{0}: {1}", e.EventName, e.ToJson());
+        private static void PrintSimpleEvent(JournalEventArgs e, bool compact = false)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (string.Equals(e.ShortEventArgsName, e.EventName, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Write("{0}: ", e.EventName);
+            }
+            else
+            {
+                Console.Write("{0}({1}): ", e.ShortEventArgsName, e.EventName);
+            }
+            Console.ResetColor();
+            string format = compact ? "C" : "G";
+            Console.WriteLine(e.ToString(format));
+        }
     }
 }

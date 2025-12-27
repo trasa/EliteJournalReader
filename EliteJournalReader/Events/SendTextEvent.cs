@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
 namespace EliteJournalReader.Events
 {
     //When written: when a text message is sent to another player
     //Parameters:
-    //•	To
-    //•	Message
+    //ï¿½	To
+    //ï¿½	Message
     public class SendTextEvent : JournalEvent<SendTextEvent.SendTextEventArgs>
     {
         public SendTextEvent() : base("SendText") { }
@@ -21,6 +14,12 @@ namespace EliteJournalReader.Events
             public string Message { get; set; }
             public string Channel { get; set; }
             public bool Sent { get; set; }
+
+            protected override string ToSummary()
+            {
+                string status = Sent ? "Success" : "Failed";
+                return $"Sent Text ({Channel}): To {To}, Message: {Message} ({status})";
+            }
         }
     }
 }

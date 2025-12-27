@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-
 namespace EliteJournalReader.Events
 {
-    //When written: If you should ever reset your game
+    //When written: Depositing tritium fuel into your carrier
     //Parameters:
-    //•	Name: commander name
+    //CarrierID: The ID of the carrier
+    //Amount: The amount of fuel deposited
+    //Total: The total amount of fuel in the carrier after the deposit
     public class CarrierDepositFuelEvent : JournalEvent<CarrierDepositFuelEvent.CarrierDepositFuelEventArgs>
     {
         public CarrierDepositFuelEvent() : base("CarrierDepositFuel") { }

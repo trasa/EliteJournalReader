@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+
 
 namespace EliteJournalReader.Events
 {
     //When written: when a docking request is granted
     //Parameters:
-    //•	StationName: name of station
-    //•	LandingPad: pad number
+    //ï¿½	StationName: name of station
+    //ï¿½	LandingPad: pad number
     public class DockingGrantedEvent : JournalEvent<DockingGrantedEvent.DockingGrantedEventArgs>
     {
         public DockingGrantedEvent() : base("DockingGranted") { }
@@ -21,6 +16,9 @@ namespace EliteJournalReader.Events
             public string StationType { get; set; }
             public long MarketID { get; set; }
             public int LandingPad { get; set; }
+
+            protected override string ToCompact() => $"Docking Permission Granted at {StationName} on pad {LandingPad}";
+            protected override string ToSummary() => ToCompact();
         }
     }
 }
