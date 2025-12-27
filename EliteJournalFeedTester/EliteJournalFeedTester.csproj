@@ -1,21 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+      <TargetFramework>net9</TargetFramework>
+      <OutputType>Exe</OutputType>
+      <PublishSingleFile>true</PublishSingleFile>
 
-  <PropertyGroup>
-    <TargetFramework>net9</TargetFramework>
+      <Copyright>Copyright © Maurits Elbers (@MagicMau) 2015-2021. Elite: Dangerous and related material is © Frontier Developments plc</Copyright>
+      <Company>MagicMau</Company>
+    </PropertyGroup>
 
-    <Copyright>Copyright © Maurits Elbers (@MagicMau) 2015-2021. Elite: Dangerous and related material is © Frontier Developments plc</Copyright>
-    <Company>MagicMau</Company>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
 
-  </PropertyGroup>
-
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\EliteJournalReader\EliteJournalReader.csproj" />
-  </ItemGroup>
-
-
+    <ItemGroup>
+        <ProjectReference Include="..\EliteJournalReader\EliteJournalReader.csproj" />
+    </ItemGroup>
 </Project>

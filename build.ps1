@@ -1,8 +1,10 @@
 ﻿$ErrorActionPreference = "Stop"
 
 $sdkProjectPath = "EliteJournalReader/EliteJournalReader.csproj"
+$feedTesterPath = "EliteJournalFeedTester/EliteJournalFeedTester.csproj"
 $distDir = "dist"
 $nupkgOutDir = "$distDir/nupkg"
+$feedTesterOutDir = "$distDir/FeedTester"
 
 # clean
 Remove-Item $nupkgOutDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -18,3 +20,11 @@ dotnet pack $sdkProjectPath `
     /p:PackageId="EliteJournalReader" `
     /p:IncludeSymbols=false `
     /p:IncludeSource=false
+
+dotnet publish $feedTesterPath `
+    --configuration Debug `
+    --output $feedTesterOutDir `
+    --self-contained true `
+    --runtime win-x64 `
+    -p:PublishSingleFile=true `
+    -p:PublishTrimmed=false
