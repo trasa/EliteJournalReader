@@ -658,11 +658,13 @@ namespace EliteJournalReader
         protected virtual JournalEventArgs FireEvent(string eventType, JObject evt)
         {
             if (journalEventsByName.TryGetValue(eventType, out var handler))
-                return handler.FireEvent(this, evt);
-            else
-                Trace.TraceWarning("No event handler registered for journal event of type: " + eventType);
-
-            return null;
+            {
+                return handler.FireEvent(this, evt, eventType);
+            }
+            // unknown event:
+            Trace.TraceWarning("No event handler registered for journal event of type: " + eventType);
+            handler = new UnhandledEvent(eventType);
+            return handler.FireEvent(this, evt, eventType);
         }
 
         public TJournalEvent GetEvent<TJournalEvent>() where TJournalEvent : JournalEvent

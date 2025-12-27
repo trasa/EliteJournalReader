@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace EliteJournalReader.Events
 {
     //When written: if the journal file grows to 500k lines, we write this event, close the file, and start a new one
     //Parameters:
-    //•	Message: next part number
+    //ï¿½	Message: next part number
     public class ContinuedEvent : JournalEvent<ContinuedEvent.ContinuedEventArgs>
     {
         public ContinuedEvent() : base("Continued")
@@ -17,9 +12,9 @@ namespace EliteJournalReader.Events
 
         }
 
-        internal override JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt)
+        internal override JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt, string eventType = null)
         {
-            var args = base.FireEvent(journalWatcher, evt);
+            var args = base.FireEvent(journalWatcher, evt, eventType);
 
             // a continued event signals that a new file is coming, so
             // let's start polling for it

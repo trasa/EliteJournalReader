@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace EliteJournalReader
 {
@@ -20,7 +21,7 @@ namespace EliteJournalReader
 
         internal abstract JournalEventArgs ParseEventArgs(JObject evt);
 
-        internal abstract JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt);
+        internal abstract JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt, string eventType = null);
     }
 
     public abstract class JournalEvent<TJournalEventArgs> : JournalEvent
@@ -38,13 +39,21 @@ namespace EliteJournalReader
 
         internal override JournalEventArgs ParseEventArgs(JObject evt) => evt.ToObject<TJournalEventArgs>();
 
-        internal override JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt)
+        internal override JournalEventArgs FireEvent(JournalWatcher journalWatcher, JObject evt, string eventType = null)
+        {
+            var eventArgs = BuildEventArgs(eventType, evt);
+
+            eventArgs.PostProcess(evt, journalWatcher);
+
+            Fired?.Invoke(journalWatcher, eventArgs);
+
+            return eventArgs;
+        }
+
+        protected virtual TJournalEventArgs BuildEventArgs(string eventType, JObject evt)
         {
             var eventArgs = evt.ToObject<TJournalEventArgs>();
-
-            eventArgs.OriginalEvent = evt;
-            eventArgs.Timestamp = DateTime.Parse(evt.Value<string>("timestamp"),
-                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            JournalEventArgs.Populate(eventArgs, evt);
 
 #if DEBUG
             Type argsType = typeof(TJournalEventArgs);
@@ -69,13 +78,8 @@ namespace EliteJournalReader
                     Trace.TraceInformation($"EventArgs for {eventName} does not contain property {jsonPropertyName}");
                     //Debugger.Break();
                 }
-
             }
 #endif
-            eventArgs.PostProcess(evt, journalWatcher);
-
-            Fired?.Invoke(journalWatcher, eventArgs);
-
             return eventArgs;
         }
     }
