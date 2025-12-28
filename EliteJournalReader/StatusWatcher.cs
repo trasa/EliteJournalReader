@@ -80,7 +80,7 @@ namespace EliteJournalReader
         ///     The directory specified in <see cref="P:System.IO.FileSystemWatcher.Path" />
         ///     could not be found.
         /// </exception>
-        public virtual void StartWatching()
+        public virtual async Task StartWatching()
         {
             if (EnableRaisingEvents)
             {
@@ -91,23 +91,26 @@ namespace EliteJournalReader
             if (!Directory.Exists(Path))
             {
                 Trace.TraceError($"Cannot watch non-existing folder {Path}.");
-                return;
+                throw new FileNotFoundException($"Cannot watch non-existing folder {Path}.");
             }
 
-            if (cancellationTokenSource != null)
-                cancellationTokenSource.Cancel(); // should not happen, but let's be safe, okay?
+            cancellationTokenSource?.Cancel(); // should not happen, but let's be safe, okay?
 
             cancellationTokenSource = new CancellationTokenSource();
 
-            Changed -= UpdateStatus;
-            Changed += UpdateStatus;
+            await Task.Run(() => {
+                Changed -= UpdateStatus;
+                Changed += UpdateStatus;
 
-            // start with reading any existing status
-            string statusJsonPath = System.IO.Path.Combine(Path, "Status.json");
-            if (File.Exists(statusJsonPath))
-                UpdateStatus(statusJsonPath, 0);
+                // start with reading any existing status
+                string statusJsonPath = System.IO.Path.Combine(Path, "Status.json");
+                if (File.Exists(statusJsonPath))
+                {
+                    UpdateStatus(statusJsonPath, 0);
+                }
 
-            EnableRaisingEvents = true;
+                EnableRaisingEvents = true;
+            });
         }
 
         public virtual void StopWatching()
@@ -118,8 +121,7 @@ namespace EliteJournalReader
                 {
                     Changed -= UpdateStatus;
 
-                    if (cancellationTokenSource != null)
-                        cancellationTokenSource.Cancel();
+                    cancellationTokenSource?.Cancel();
 
                     EnableRaisingEvents = false;
                 }

@@ -3,10 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +55,7 @@ namespace EliteJournalReader.Tests
         }
 
         [TestMethod]
-        public void Test_Parse_StatusJson()
+        public async Task Test_Parse_StatusJson()
         {
             var hodor = new AutoResetEvent(false);
 
@@ -70,7 +67,7 @@ namespace EliteJournalReader.Tests
                 evt = e;
                 hodor.Set();
             };
-            watcher.StartWatching(tempFolder);
+            await watcher.StartWatching(tempFolder);
 
             while (!hodor.WaitOne(100))
             {
@@ -87,7 +84,7 @@ namespace EliteJournalReader.Tests
         }
 
         [TestMethod]
-        public void Test_Parse_Multiple_Updates_Of_StatusJson()
+        public async Task Test_Parse_Multiple_Updates_Of_StatusJson()
         {
             // only open the door when the status updated event has been processed
             var hodor = new AutoResetEvent(false);
@@ -102,7 +99,7 @@ namespace EliteJournalReader.Tests
                     hodor.Set();
                 }
             };
-            watcher.StartWatching(tempFolder);
+            await watcher.StartWatching(tempFolder);
 
             double lon = 14;
             while (!hodor.WaitOne(100))

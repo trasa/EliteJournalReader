@@ -261,11 +261,10 @@ namespace EliteJournalReader
             if (!Directory.Exists(Path))
             {
                 Trace.TraceError($"Cannot watch non-existing folder {Path}.");
-                return;
+                throw new FileNotFoundException($"Cannot watch non-existing folder {Path}.");
             }
 
-            if (cancellationTokenSource != null)
-                cancellationTokenSource.Cancel(false); // should not happen, but let's be safe, okay?
+            cancellationTokenSource?.Cancel(false); // should not happen, but let's be safe, okay?
 
             cancellationTokenSource = new CancellationTokenSource();
 

@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EliteJournalReader.Events
 {
@@ -183,6 +179,4 @@ namespace EliteJournalReader.Events
         public double FuelMain { get; set; }
         public double FuelReservoir { get; set; }
     }
-
-
 }

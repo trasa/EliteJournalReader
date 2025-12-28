@@ -1,12 +1,13 @@
 ﻿using EliteJournalReader;
 using EliteJournalReader.Events;
 using System;
+using System.Threading.Tasks;
 
 namespace EliteJournalFeedTester
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             if (args.Length == 0)
             {
@@ -24,6 +25,7 @@ namespace EliteJournalFeedTester
                 Console.ResetColor();
             });
 
+           #region watcher.GetEvent<...>.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<AfmuRepairsEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<AppliedToSquadronEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<ApproachBodyEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
@@ -281,7 +283,14 @@ namespace EliteJournalFeedTester
             watcher.GetEvent<WingLeaveEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
             watcher.GetEvent<WonATrophyForSquadronEvent>()?.AddHandler((_, e) => PrintSimpleEvent(e));
 
-            watcher.StartWatching().Wait();
+            #endregion
+
+            var journalTask = watcher.StartWatching();
+            await journalTask;
+
+            StatusWatcher statusWatcher = new StatusWatcher(path, logUpdates: true);
+            statusWatcher.StatusUpdated += (_, e) => PrintStatus(e);
+            await statusWatcher.StartWatching().ConfigureAwait(true);
 
             Console.ReadLine();
 
@@ -302,6 +311,87 @@ namespace EliteJournalFeedTester
             Console.ResetColor();
             string format = compact ? "C" : "G";
             Console.WriteLine(e.ToString(format));
+        }
+
+        private static void PrintStatus(StatusFileEvent e)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("Status Updated: ");
+            Console.ResetColor();
+            Console.Write($"{nameof(e.BodyName)}: {e.BodyName}, ");
+
+            if (e.PlanetRadius > 0.0)
+            {
+                Console.Write($"{nameof(e.PlanetRadius)}: {e.PlanetRadius}, ");
+            }
+
+            if (e.Altitude > 0.0)
+            {
+                Console.Write($"{nameof(e.Altitude)}: {e.Altitude}, ");
+            }
+            if (e.Latitude > 0.0)
+            {
+                Console.Write($"{nameof(e.Latitude)}: {e.Latitude}, ");
+            }
+
+            if (e.Longitude > 0.0)
+            {
+                Console.Write($"{nameof(e.Longitude)}: {e.Longitude}, ");
+            }
+            Console.Write($"{nameof(e.Heading)}: {e.Heading}, ");
+
+            Console.Write($"{nameof(e.Balance)}: {e.Balance}, ");
+            Console.Write($"{nameof(e.BodyName)}: {e.BodyName}");
+            Console.Write($"{nameof(e.Cargo)}: {e.Cargo}, ");
+
+            PrintStatusFlags(e.Flags);
+            PrintStatusFlags(e.Flags2);
+
+            Console.Write($"{nameof(e.Firegroup)}: {e.Firegroup}, ");
+            if (e.GuiFocus != StatusGuiFocus.NoFocus)
+            {
+                Console.Write($"{nameof(e.GuiFocus)}: {e.GuiFocus}, ");
+            }
+
+            if (e.LegalState != LegalState.Unknown)
+            {
+                Console.Write($"{nameof(e.LegalState)}: {e.LegalState}, ");
+            }
+
+            Console.WriteLine();
+            if (e.Fuel != null)
+            {
+                Console.WriteLine($"{nameof(e.Fuel)}: Main: {e.Fuel.FuelMain}/ Res: {e.Fuel.FuelReservoir}, ");
+            }
+
+            if (e.Destination != null)
+            {
+                Console.WriteLine($"{nameof(e.Destination)}: Name: {e.Destination.Name}, Sys: {e.Destination.System}, Body: {e.Destination.Body}");
+            }
+
+            Console.WriteLine($"{nameof(e.Pips)}: SYS:{e.Pips.System}, ENG:{e.Pips.Engine}, WEP:{e.Pips.Weapons}");
+
+            if (e.Oxygen > 0.0)
+            {
+                Console.Write($"{nameof(e.Oxygen)}: {e.Oxygen}, ");
+                Console.Write($"{nameof(e.Health)}: {e.Health}, ");
+                Console.Write($"{nameof(e.Temperature)}: {e.Temperature}, ");
+                Console.Write($"{nameof(e.SelectedWeapon)}: {e.SelectedWeapon}, ");
+                Console.Write($"{nameof(e.Gravity)}: {e.Gravity}, ");
+                Console.WriteLine();
+            }
+        }
+
+        private static void PrintStatusFlags<T>(T f) where T : struct, Enum
+        {
+            Console.Write("Status Flags: ");
+            foreach (T flag in Enum.GetValues<T>())
+            {
+                if (f.HasFlag(flag))
+                {
+                    Console.Write($"{flag}, ");
+                }
+            }
         }
     }
 }
