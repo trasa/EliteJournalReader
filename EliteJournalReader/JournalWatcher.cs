@@ -1,16 +1,8 @@
 ﻿using EliteJournalReader.Events;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace EliteJournalReader
 {
@@ -242,6 +234,7 @@ namespace EliteJournalReader
         /// <summary>
         ///     Starts the watching.
         /// </summary>
+        /// <param name="cancellationToken">If provided, use this token for cancellation</param>
         /// <exception cref="InvalidOperationException">
         ///     Throws an exception if the <see cref="Path" /> does not contain netLogs
         ///     files.
@@ -250,7 +243,7 @@ namespace EliteJournalReader
         ///     The directory specified in <see cref="P:System.IO.FileSystemWatcher.Path" />
         ///     could not be found.
         /// </exception>
-        public virtual async Task StartWatching()
+        public virtual async Task StartWatching(CancellationToken? cancellationToken = null)
         {
             if (EnableRaisingEvents)
             {
@@ -265,8 +258,14 @@ namespace EliteJournalReader
             }
 
             cancellationTokenSource?.Cancel(false); // should not happen, but let's be safe, okay?
-
-            cancellationTokenSource = new CancellationTokenSource();
+            if (cancellationToken != null)
+            {
+                cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken.Value);
+            }
+            else
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+            }
 
             // before we start watching, rerun all events up until now (including any previous parts of this game session)
             await Task.Run(() => {

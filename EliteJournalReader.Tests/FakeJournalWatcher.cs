@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteJournalReader.Tests
@@ -21,7 +22,7 @@ namespace EliteJournalReader.Tests
             Path = journalPath;
         }
 
-        public override Task StartWatching()
+        public override Task StartWatching(CancellationToken? cancellationToken = null)
         {
             IsLive = true;
             return Task.CompletedTask;

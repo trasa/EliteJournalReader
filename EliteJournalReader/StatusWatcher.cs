@@ -72,6 +72,7 @@ namespace EliteJournalReader
         /// <summary>
         ///     Starts the watching.
         /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token to stop watching</param>
         /// <exception cref="InvalidOperationException">
         ///     Throws an exception if the <see cref="Path" /> does not contain netLogs
         ///     files.
@@ -80,7 +81,7 @@ namespace EliteJournalReader
         ///     The directory specified in <see cref="P:System.IO.FileSystemWatcher.Path" />
         ///     could not be found.
         /// </exception>
-        public virtual async Task StartWatching()
+        public virtual async Task StartWatching(CancellationToken? cancellationToken = null)
         {
             if (EnableRaisingEvents)
             {
@@ -95,8 +96,14 @@ namespace EliteJournalReader
             }
 
             cancellationTokenSource?.Cancel(); // should not happen, but let's be safe, okay?
-
-            cancellationTokenSource = new CancellationTokenSource();
+            if (cancellationToken != null)
+            {
+                cancellationTokenSource =  CancellationTokenSource.CreateLinkedTokenSource(cancellationToken.Value);;
+            }
+            else
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+            }
 
             await Task.Run(() => {
                 Changed -= UpdateStatus;
