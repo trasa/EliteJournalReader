@@ -28,3 +28,7 @@ dotnet publish $feedTesterPath `
     --runtime win-x64 `
     -p:PublishSingleFile=true `
     -p:PublishTrimmed=false
+
+# local only: copy the package to my local packages dir:
+cp $nupkgOutDir/*.nupkg ~/local-nuget-packages
+

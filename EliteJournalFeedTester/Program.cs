@@ -297,7 +297,7 @@ namespace EliteJournalFeedTester
             watcher.StopWatching();
         }
 
-        private static void PrintSimpleEvent(JournalEventArgs e, bool compact = false)
+        private static void PrintSimpleEvent<T>(T e, bool compact = false) where T : JournalEventArgs
         {
             Console.ForegroundColor = ConsoleColor.Green;
             if (string.Equals(e.ShortEventArgsName, e.EventName, StringComparison.OrdinalIgnoreCase))
